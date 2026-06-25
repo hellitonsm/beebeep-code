@@ -25,7 +25,8 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq qtbase5-dev qtmultimedia5-dev \
             libqt5x11extras5-dev libxcb-screensaver0-dev \
-            libgl1-mesa-dev libavahi-compat-libdnssd-dev
+            libgl1-mesa-dev libavahi-compat-libdnssd-dev \
+            qttools5-dev-tools
 
       - name: Build BeeBEEP
         run: |
@@ -43,7 +44,8 @@ jobs:
             [ -f "$plugin" ] && cp -P "$plugin" "${RELEASE_DIR}/"
           done
 
-          cp -r locale/*.qm "${RELEASE_DIR}/"
+          lrelease locale/*.ts 2>/dev/null
+          cp locale/*.qm "${RELEASE_DIR}/" 2>/dev/null || true
           rm -f "${RELEASE_DIR}/beebeep_xx.qm"
           cp src/images/beebeep.png "${RELEASE_DIR}/"
           cp misc/beep.wav "${RELEASE_DIR}/"
