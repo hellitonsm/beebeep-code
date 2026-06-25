@@ -1,0 +1,19 @@
+// 
+// BeeBEEP FAQ
+//
+// Author: Marco Mastroddi (marco.mastroddi(AT)gmail.com)
+//
+// $Id: BEEBEEP-FAQ.txt 1297 2019-10-17 16:46:30Z mastroddi $
+//
+
+You can find FAQ section in the web page:
+https://www.beebeep.net/faq
+
+You can receive support in the web page:
+https://www.beebeep.net/help
+or
+https://www.beebeep.net/support
+
+Other pages:
+https://www.beebeep.net/news
+https://www.beebeep.net/tips

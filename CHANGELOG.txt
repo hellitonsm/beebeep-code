@@ -1,0 +1,473 @@
+BEEBEEP (Free Office Messenger) - CHANGELOG - (c) 2010-2023 Marco Mastroddi
+For more informations please visit https://www.beebeep.net
+
+BeeBEEP 5.9.1
+- Ported to Qt 5.15 (working for Qt 6).
+- Added "DisableSendFolder" option in RC file.
+- Added "DisableTabInEditBox" option in INI and RC file in the group "Chat".
+- Fixed UI when edit your color in "Profile Card".
+
+BeeBEEP 5.8.6
+- Added new protocol to manage "sent messages" but never received.
+- Added "Enable visual notifications for chat window" option menu Settings - Notifications.
+- Added "Change emoticon size in chat" option in menu Settings - Chat.
+- Added button "To send text as Source CODE" in chat window.
+- Fixed a bug in connection to prevent PING before HELLO message.
+- Fixed a bug on using Message History with CTRL+Up / CTRL+Down.
+- Fixed a bug on "Raise chat window on new message".
+- Fixed a bug that did not allow messages to be displayed correctly between the dark theme and the default one.
+- Fixed a bug that prevent connection after SLEEP / SUSPEND mode.
+- Emoticons will no longer be displayed larger than their maximum size.
+- Important private messages now open the chat window.
+- Added "EnableReceivingHelpMessages" option in beebeep.rc file.
+- Added global shortcut CTRL+SHIFT+1 for PANIC BUTTON and HELP REQUEST automatic message.
+- Added room location in user VCard (useful also for help request).
+- If you right click on a url in a chat you can copy the url to the clipboard without having to select it.
+- Added shortcut with "Enter", "Return", "Space" keys to open chat if selected in list.
+- Added global shortcut CTRL+ALT+C to "Select first chat available", so you can navigate with arrows and open with return.
+- Added "file transfer completed" notification also per BeeBOX downloaded files.
+- Added option "MessageNotReceivedTimeout_ms" for internal use.
+- BeeBEEP is now minimized on tray if user close it by "red X" in the window (also if BeeBEEP is not connected).
+- Added "BackupFolderPath" option in beebeep.rc file.
+- Added "Delete unsent messages in chat" and "Delete unsent messages to user" option.
+- Fixed a QT bug that created network latency
+
+BeeBEEP 5.8.4
+- New feature: almost all the options of file beebeep.ini can be used in file beebeep.rc also
+- New feature: added "Use high resolution emoticons" option
+- New feature: added ECDH key exchange to encryption protocol
+- New feature: added "Auto save interval" for chat messages to prevent data loss
+- New feature: added "Favored emoticons" as tab in emoticon list
+- New feature: added Voice Message Player interface
+- New dark theme added in the interface
+- User icons in chat window can be clicked also if the user is offline
+- Suspend/sleep mode is now managed also in Linux systems.
+- File paths will be recognized and made clickable in chat (it must be a single message).
+- Added "KeepModificationDateOnFileTransferred" option in beebeep.ini (it is always enabled in BeeBOX)
+- Added "AllowedFileExtensionsInFileTransfer" option in beebeep.rc
+- Added "AllowOnlyHostAddressesFromHostsIni" option in file beebeep.rc
+- Added "Clear recent emoticons" in menu option of the chat bar
+- Added "ConnectionKeyExchangeMethod" option in beebeep.rc
+- Added "AddNicknameToDataFolder" option in beebeep.rc
+- Fixed known issue: BeeBEEP prevents the CTRL+ALT+B (or CMD+ALT+B on MacOSX) key sequence in other applications from working
+- Fixed a bug in options "Disable create message" and "Disable edit groups"
+- Fixed a visualization bug if you open an user VCARD near the side of your desktop
+- Fixed a bug on Download folder when you copy BeeBEEP from a computer to another one
+- Fixed security issue with command line argument -platformpluginpath
+
+BeeBEEP 5.8.2
+- New feature: voice messages (you can record your message and send it as file)
+- New feature: file transfer pause/resume
+- New feature: data compression with zlib 
+- Voice messages can be also sent to offline users like text messages
+- Added "Quote selected text" option to context menu (right click) of the chat
+- Added "CheckUserConnectedFromDatagramIp" option in beebeep.rc (to prevent multiple connections from the same user but different ip addresses)
+- Added "Clear system messages" option in context menu (right click) of activity and chat windows
+- Added "SkipLocalHardwareAddresses" in beebeep.rc to skip unesuful network interfaces
+- The option "AllowMultipleInstances" can be disabled also in Terminal Server because it checks also user account
+- The avatar icon size is also applied in member icons of the chat windows
+- Added "On sending message" option in Settings - Chat menu for "one-time" message:
+  - Do nothing (default)
+  - Minimize chat window
+  - Close chat window
+- Added "DisableDesktopSharing" option in beebeep.rc
+- Added "DisableBeepInUserStatusBusy" option in beebeep.ini
+- Added "EnableBeepInActiveWindow" option in beebeep.ini 
+- Added "UseUserFullName" option in beebeep.rc to show (if exists) user's full name instead of nickname
+- Added "DisableEncryptedConnections" option in beebeep.rc
+- Added "AllowNotEncryptedConnections" option in beebeep.rc (used with "DisableEncryptedConnections")
+- Added "AllowEncryptedConnectionsAlso" option in beebeep.rc (used with "DisableEncryptedConnections")
+- Added "BroadcastToLocalSubnet" option to send or not send the HELLO message to the local subnet twice when multicasting is active
+- User first and last names, email and phone number are now saved to use it also if the user is offline
+- Added "AppendHostNameToUserName" option in beebeep.rc
+- Added "DisableConnectionSocketDataCompression" option in beebeep.rc
+
+BeeBEEP 5.6.8
+- "ChatSaveFileTransfers" and "ChatSaveSystemMessages" options added in Settings - Chat menu: 
+  if enabled history saves also these messages
+- Disabled High DPI icons in windows (can be enabled with qt.conf file)
+- Added new option in Settings - Chat - "Save maximum lines in chat": 
+  you can choose how many lines to save for every chat
+- Added "Clear cache items after X days" option: default is 96 days
+- Added new option in Settings - Chat - "Show only # messages" to avoid performance issue
+- Added "Always download files into the folder with the user's name" option in menu Settings - File Transfer
+- The names of users and chats that contain the characters < > will now be correctly displayed (do not abuse)
+- Improved search for predefined folders in Unix environment
+- First release of a debian package for amd64 systems (beta)
+- Compiled with large file support in Linux
+- Reorganization of the "Settings" menu:
+  - "Sound", "System tray" and "on new message event" options are now grouped into the menu Settings - Notifications
+  - "Workgroups" -> "Your workgroups" in "Network" menu
+  - "Set your status to away automatically" is now in "User status" menu in the toolbar
+  - added new Menu "Interface"
+- Added "Show users in their workgroups" option in user list settings
+- Added "Time left" column in File Transfer window
+- Added "Add up to # files to the transfer queue" option in Settings - File Transfer menu
+
+BeeBEEP 5.6.4
+- For security reasons the beebeep.off file (saved unsent messages) are now linked to the beebeep.ini file 
+  via an authorization code. In case of different code the file will not be loaded.
+- Fixed a bug in MacOSX: custom resource folder path will be the same of data folder
+- Unsent messages are now saved in file beebeep.off when BeeBEEP is closed (option can be disabled)
+- Fixed system tray icon size (default is 24px) in Linux Desktop Environment
+- Updated HUNSPELL library to 1.7.0
+- File beebeep.rc can be placed also in /etc folder in Unix like systems (Linux and MacOSX)
+- User and chat tooltips show also unsent messages
+- New feature: you can test your network connections in menu "Main" - "Test your network"  
+- File share: file icons are now selected from file mimetype in Linux.
+- Fixed a minor bug on new message notification
+
+BeeBEEP 5.6.2 
+- New feature: you can also send files (dragging and) dropping them on the user in main user list window
+- Added "RaiseMainWindowOnNewMessageArrived" option
+-(Desktop Sharing feature re-enabled)
+
+BeeBEEP 5.6.1
+- Updated to Qt 5.9.8 (Windows)
+- Fixed an error in group notification when new message arrives
+- Windows installer now creates a rule in firewall for BeeBEEP 
+- Added "ShowChatsOnConnection" option to show the chat list at startup
+- Added "HideEmptyChatsInList" option to hide empty chats in list
+- (Disabled Desktop Sharing feature for testing)
+
+BeeBEEP 5.6.0
+- Now the Avatar icon border in the chat right panel will be yellow if the messages have not yet been 
+  displayed in the user's chat.
+- If option "Always open chat on new message" is enabled and "Raise previously opened 
+  chat on new message" is disabled, the window is now opened minimized to show icon
+  blinking on taskbar.
+- Added "AllowEditNickname" option in beebeep.rc
+- Fixed a bug on saving option "Recognize user by"
+- Added "DisableCreateMessage" option in beebeep.rc
+- Added "ActiveWindowOpacityLevel" and "InactiveWindowOpacityLevel" option for chat window
+- Added "BackgroundColor", "DefaultTextColor" and "SystemTextColor" option for chat window
+- Added "EnableDefaultChatNotifications" option
+- Added "Regenerate HASH code" button in Edit Profile window (to easily avoid "same HASH errors")
+- Added notification a few days before user's birthday event (birthday is now saved with user data)
+- Added flag "Important!!" to chat message in "create message" window (raise the receiver chat window on top)
+- Added "DisableMenuSettings" option in beebeep.rc
+- Added "UseMessageTimestampWithAP" option (timestamp can be showed with am/pm suffix)
+- Added "BroadcastToOfflineUsers" option
+- Added "IP Multicast TTL" option
+- Added "Use the dark theme" option (beta)
+- Added "RaiseOnNewFileTransfer" option
+- (Disabled Desktop Sharing feature for testing)
+
+BeeBEEP 5.4.2
+- Removed option "On close minimize on tray" for MacOSX
+- Added more debug messages on user recognition
+- Added "Autoresponder" when user send messages in group where he is not member
+- Fixed bug: duplicate first message on chat window
+
+BeeBEEP 5.4.1
+- Fixed bug: "Transfer completed" message is not showed in chat
+- File sharing window now save its geometry on close
+- Create message window now save its geometry on close
+- Added option "Enable maximize button"
+- Groups can be created also with just one member (and you)
+
+BeeBEEP 5.4.0
+- Patched Qt 5.9.6: window state are not restored (save only geometry option added)
+- Prevent "user collision" from same IP address
+- Fixed "slow connection bug" at startup
+- Added option "Always open chat on new message"
+- Added option to remove members from group
+- Added option "AllowAddMembersToGroup" in beebeep.rc
+- Added option "AllowRemoveMembersFromGroup" in beebeep.rc
+- Added option "Reset geometry of all windows"
+- Fixed some GUI bugs
+- On new message the BeeBEEP main icon also blinks
+
+BeeBEEP 5.2.0
+- Added "Create message" window to send one time message to many
+- Added default multicast group address 239.255.64.75
+- Added option "Use default multicast group address"
+- Added option "Show users on connection"
+
+BeeBEEP 5.0.2
+- Fixed compatibility of window geometry and state with previous version
+- Fixed minor bug in save settings
+- Added option "Save window's geometry" on close 
+
+BeeBEEP 5.0.1
+- Added "DisableSystemProxyForConnections" option
+
+BeeBEEP 5.0.0
+- [SECURITY UPDATE] Encryption level 3 using key generated by SHA3-256 algorithm
+- Desktop Sharing (beta)
+- Send screenshot from chat
+- Simplified GUI of "Configure network..." option
+- Hive protocol can be used to contact user who remains offline
+- Added delay on first connection option
+- Option to send offline messages also in chat with all user
+- ShareBox is improved with remote folder creation
+- Image transferred can be also opened with a double click in preview
+- Option to show usernames in chat with colors or not
+- "User has read message" is now available as tootip on the user list of the chat (on mouse hover)
+- Updated to Qt 5.9.6
+
+BeeBEEP 4.0.0
+- Changed all the main user interface
+- All the main options are now grouped in the Settings menu
+- Added status description option in user list
+- Added status tooltip on the user's avatar/icon
+- Added a check and an alert on same nickname/account of the connecting users
+- Added "DisablePrivateChats" option on beebeep.rc file
+- Added "DisableFileSharing" option on beebeep.rc file
+- Chats are now always opened in separate window (single or multi)
+- Fixed bug on leave a group chat
+- Removed game plugin interface
+- Added Workgroups interface in Settings/Users menu
+- Users can be also recognized by their hash
+- Change local user option added in Settings/OnConnection menu
+- Message are now sent with UTC timestamp and converted to local time when received
+- Fixed save of the dictionary selected
+- Hunspell library updated to version 1.6.1
+- Added option to select custom icons and emoticons
+- Automatic disconnection on system in sleep mode and connection on system wake up (only for windows and macosx)
+
+BeeBEEP 3.0.9
+- The emoticon icon is now showed in detached chat (bug fixed)
+- Added BUZZ for the private chats
+
+BeeBEEP 3.0.8
+- Chat messages are now saved on disconnection
+- Fixed a bug in option "HideMainToolbar"
+- Broadcast processes are now simplified and optimized (some options are now obsolete, see BEEHELP.txt)
+- The file transferred via chat are now showed only in the right chat window
+- Preserve last modification timestamp of the transferred files
+- The message "User is writing" is now shown in the right chat window if it is visible
+- "Signature" option added in beebeep.rc file
+- "Open folder" link (shown after a file transferred) also highlight the selected file in the folder (only for windows and macosx)
+- "UseOnlyTextEmoticons" option added in beebeep.rc file
+- Fixed a bug on smart selection of the data folder (now if the application folder is not writeable, BeeBEEP save its data to UserAppData folder)
+- Users can be sorted in ascending or descending order, by name, by status, by unread messages and by priority (default)
+- A "new message notification" is shown also when a new file is received from a user
+- Fixed a bug in emoticon parsing
+- Hive protocol optimized
+- Fixed a bug in opening url with diacritic characters in path
+- Preset Messages
+- Added option to read a "beegroups.ini" file (beta)
+- Added option to set layout in RTL mode (beta)
+
+BeeBEEP 3.0.7
+- ShareBox: new feature in beta (can share files like dropbox with all users connected)
+- Added "Find text" and "Print" options in history (shortcut or right click)
+- Fixed a bug in "Send offline messages"
+- Added CopyMastro plugin support
+- "Clear all read messages on closing chat window" option added
+- "File notification on system tray" option added
+- "StartMinimized" option added in beebeep.rc
+
+BeeBEEP 3.0.6b
+- Fixed "Stays on top" option in Linux and MacOSX
+
+BeeBEEP 3.0.6
+- Added "UseHostnameForDefaultUsername" option. It can be enabled in beebeep.rc
+- Updated nickname update also the name of the chat window
+- Fixed a bug that broke the link when there is an exclamation symbol in it
+- Fixed a bug in showing chat window when tray message is clicked
+- Users can not be removed from group by the other members but they can leave the group if they want to (due serverless)
+- Windows UNC path are parsed and now it can be clickable
+- "Open selected text as url" option added in chat chat window (right click on selected text)
+- "Overwrite existing files" and "Ask me" option added
+- Fixed a bug in icon of default chat when a new message is arrived
+- Fixed a bug in alert beep when a new message is arrived
+- Fixed a bug on stay on top (windows)
+- Added "HideMainToolbar", "HideChatToolbar", "HideUsersPanel" and "HideOtherPanels" options. They can be enabled in beebeep.rc
+- Added "UseEasyConnection" option to beebeep.rc
+- Added "DisableFileTransfer" option in beebeep.rc
+- Added "DisableSendMessage" option in beebeep.rc
+- Added global shortcut for "Show all chat windows" (default CTRL+ALT+B)
+- Fixed a bug in linkify parser (in some case &nbsp; is added to link)
+
+BeeBEEP 3.0.5
+- Added timestamp and datestamp to home activities (option - right click on text)
+- Chat messages can be printed (all or selected)
+- Image preview is added in non native File Dialog (native has by default)
+- Added anonymous usage statistics (option)
+- Added new edit option in add user manually dialog
+- Added shortcut for broadcast action and send folder action
+- Fixed a bug in add user manually dialog
+- Find text in chat (right click on chat window)
+- Fixed a bug on paste string on message edit when word completer is enabled
+- Preview of chat message can be showed on tray notification (option)
+- Nickname can be selected at each connection (option)
+- Added save main window geometry option in view menu
+- Auto search for new users every 15 seconds if the connected user list is empty
+
+BeeBEEP 3.0.4
+- Hive protocol added: BeeBEEPs tell each other the host address of the connected users. It can be disabled in beebeep.rc (option)
+- Check for new version at startup (option)
+- Use your name instead of you in the chat messages (option)
+- Enable saving data. It can be disabled in beebeep.rc (option)
+- Added datestamp to message (option)
+- Fixed doubled url link in copy and paste from Chrome
+- Enable broadcasting timer interval (option)
+
+BeeBEEP 3.0.3
+- Image preview is also showed when an upload is completed
+- The multicast group can be specified as host address in beebeep.rc (option)
+- Key Return can be disabled as shortcut to send chat message (option)
+- Shortcut "Send chat message" added
+- Spell checking can be enabled (thanks to HUNSPELL library)
+- Word completer can be enabled (option)
+- Chat with all users can be disabled in beebeep.rc (option)
+- Fixed emoticons compatibility issue between Qt4 and Qt5 version
+- Keep alive over socket implemented
+- Auto connection when network interface is up again
+- Application icon blinks if there are unread messages
+- Fixed saving bug on system session shutdown
+- Message icon added in the main toolbar (it is enabled if there are some unread messages)
+
+BeeBEEP 3.0.2
+- Fixed compatibility with Windows 10 with Qt 5.5 (it will become the default windows release)
+- Fixed compatibility with Windows XP with Qt 4.8.6 (windows XP release)
+- mDnsResponder library updated to 330.10 in Windows
+- For better compatibility BeeBEEP now accepts connection only from IPv4 address
+- IPv6 protocol can be enabled by "UseIPv6" in beebeep.rc (option)
+- Shortcut "Minimize all chats" added
+
+BeeBEEP 3.0.1
+- Workgroups (in the search users dialog)
+- Accept connections only from workgroups (option)
+- Recently used User Status can be selected
+- Drop or paste images on the message box
+- Set background color as status for users in list (option)
+- Enable and edit custom shortcuts (option)
+- Show only message notifications in system tray (option)
+- File beehosts.ini now accepts host address and port (see beehosts_example.ini for more informations)
+- Added "PreferredSubnets" in beebeep.rc (option)
+
+BeeBEEP 3.0.0
+- Fixed issue with "This app is preventing shutdown" in Windows
+- Removing a group action will delete also the chat with the group members
+- Zero Configuration Networking option added
+- Floating chats
+- Esc key minimize the active window
+
+BeeBEEP 2.0.4
+- Some GUI improvements (new icons, file sharing tree load faster)
+- Always Beep on new message arrived (option)
+- Favorite users (right click on user and enable star button, save users option must be enabled) is on top of the list
+- improved group usability
+- Offline users can be removed from list (right click on an offline user in list and then remove)
+- Clear all files shared (option)
+- Load minimized at startup (option)
+- Prompt on close event when connected (option)
+- Open your data folder (option)
+- The "chat with all" background color can be changed
+
+BeeBEEP 2.0.3
+- Fixed shared folder tree
+
+BeeBEEP 2.0.2
+- Fixed a bug in "open url" function
+
+BeeBEEP 2.0.1
+- Fixed icon problem in Linux system tray
+
+BeeBEEP 2.0.0
+- Updated to Qt Library 5.4.2 (for unicode emojis but it will be more than doubled the package size)
+- Users can be saved on exit
+- Offline messages
+- Send file and folder by drag and drop in a chat
+- Message box can be resized
+- Show only last [num] messages (increase the usability)
+- Reset windows geometry to default at startup option
+- New emoticons interface (emojis)
+- Escape key will minimize BeeBEEP into the system tray (option)
+- DataFolderPath and AddAccountNameToDataFolder option in RC file
+- ConfirmOnDownloadFile option added
+- Disable notification for group option added in group menu (right click on list)
+- User online/offline status notification in tray
+- Chat can be saved in pdf format
+- Show downloaded image preview in chat (option)
+
+BeeBEEP 1.0.2
+- Show homepage with activities at startup (can be disabled by option)
+- Display chat members in chat window and as selected users in user panel
+- Added "Max simultaneous downloads" option in beebeep.ini configuration file
+- Enabled multiple files and folder download from file sharing window
+- Added a text filter to quickly search user in list
+
+BeeBEEP 1.0.1
+- Fixed notification bug with "always on top" option active
+- More "image format type" added for profile picture
+- Fixed font tonality in avatar creation
+
+BeeBEEP 1.0.0
+- Only an instance of BeeBEEP can started a time (can be changed in beebeep.rc file)
+- Send message button
+- Default avatar created for the users
+- Message filter in chat
+- Default Listener, File Transfer and Broadcast port can be set in beebeep.rc file
+- Chat settings menu is moved to chat toolbar
+- System tray icon is now always visible (context menu with settings is added)
+
+BeeBEEP 0.9.9
+- Improved subnet selection when there are many network cards installed
+- HotKeys CTRL+A and CTRL+C (CMD+ for mac users) enabled in chat window read-only section
+- Show avatar in list of users option
+- Status menu icon shows your information when clicked (menu is accessible by the usual way, the drop down arrow)
+
+BeeBEEP 0.9.8
+- Language interface added
+- More info in profile
+- MacOSX version
+- eComStation and OS/2 version
+- High dpi support for screenshot plugin
+
+BeeBEEP 0.9.7
+- Clear chat messages option
+- Encryption security level 2
+- Removed the limit on the number of files can be shared
+- Groups
+- Regular-Bold Text Marker plugin
+- (Drag and) drop files in chat or in local shares
+- Linux version
+
+BeeBEEP 0.9.6
+- Auto set Away status when idle option
+- Make screenshot plugin
+- Conway's Game of Life plugin (just for fun)
+- Link saved chat using only nickname option
+
+BeeBEEP 0.9.5
+- Load minimized at startup option
+- A new window to see application log
+- Save chat messages on exit option
+- BeeTetris plugin added, just for fun
+- Disable notification in tray option
+- Improved group chat
+
+BeeBEEP 0.9.4
+- Use default password without prompt at startup
+- RC file created to let the user choose Native or INI configuration file
+
+BeeBEEP 0.9.3
+- Group chat
+- Put window on top when a new message arrive option
+- Automatic start on windows boot option
+
+BeeBEEP 0.9.2
+- Minimize on System Tray is now Close on System Tray
+- Always on top window option
+- Select file audio option
+- Game plugin interface
+
+BeeBEEP 0.8.2
+- File Sharing on local area network
+- Minimize on System Tray option
+
+BeeBEEP 0.6.2
+- Number Encoder Text Marker plugin
+- File BeeHost.ini to reach custom networks
+
+BeeBEEP 0.5.2
+- File Transfer improved
+- Plugin support enabled
+- vCard (profile)
+- HTML code in messages
+- Rainbow Text Marker plugin
+- Clickable url and email links

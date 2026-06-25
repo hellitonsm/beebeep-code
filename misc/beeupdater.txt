@@ -1,0 +1,20 @@
+[Windows]
+CurrentVersion=5.8.2
+
+[Linux]
+CurrentVersion=5.8.2
+
+[MacOSX]
+CurrentVersion=5.8.2
+
+[OSX]
+CurrentVersion=5.8.2
+
+[OS2]
+CurrentVersion=5.8.2
+
+[PI]
+CurrentVersion=5.8.2
+
+[Info]
+News="<a style='text-decoration: none;' href='https://www.beebeep.net/news'><b><font color=#dede00>BeeBEEP news</font></a></b>"

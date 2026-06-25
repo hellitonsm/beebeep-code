@@ -1,0 +1,42 @@
+# Build output
+test/
+build/
+Makefile
+*.o
+*.obj
+*.qm
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
+
+# IDE
+*.pro.user*
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+*.autosave
+
+# OS
+.DS_Store
+Thumbs.db
+
+# SVN (migrating to git)
+.svn/
+
+# Qt Creator
+CMakeLists.txt.user*
+
+# Debian packaging artifacts
+*.deb
+*.ddeb
+*.buildinfo
+*.changes
+*.lintian
+
+# Translations source (not needed in repo, .qm is generated)
+locale/*.ts
+
+# Script outputs
+scripts/*.tar.gz

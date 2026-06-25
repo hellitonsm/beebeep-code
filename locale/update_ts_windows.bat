@@ -1,0 +1,1 @@
+C:\Qt\4.8.7\bin\lupdate -recursive -verbose ../beebeep-desktop.pro

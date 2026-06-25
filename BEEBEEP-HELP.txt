@@ -1,0 +1,375 @@
+//
+// BeeBEEP Help
+//
+// Author: Marco Mastroddi <marco.mastroddi(AT)gmail.com>
+//
+// Latest version: https://sourceforge.net/p/beebeep/code/HEAD/tree/BEEBEEP-HELP.txt
+//
+// $Id: BEEBEEP-HELP.txt 1569 2024-04-20 09:16:57Z mastroddi $
+//
+
+/******** ATTENTION PLEASE!! **************/
+/* EDIT THESE FILES ONLY WHEN BEEBEEP IS  */
+/* CLOSED OR DATA MODIFIED WILL BE LOST   */
+/******************************************/
+
+/* !!! IMPORTANT
+ * If the value of an option in the beebeep.rc file is a string containing a period, 
+ * comma or other type of punctuation, you must enclose the string in two quotation marks. 
+ * For example:
+ * PreferredSubnets=192.168.1.255, 10.0.0.255 (ERROR)
+ * PreferredSubnets="192.168.1.255, 10.0.0.255" (OK) 
+ *
+**/
+
+/* !!! PLEASE NOTE since version 5.8.4
+ * Since version 5.8.4 many of the options in the beebeep.ini file can be written to the 
+ * beebeep.rc file to be applied to all users of that computer.
+ * Remember to add the settings group name before the options.
+ *
+ * For example (we add beebeep.ini options about saving messages and the group is Gui):
+ *
+ * [BeeBEEP]
+ * UseHive=false
+ * UseMulticastDns=false
+ * EnableSaveData=false
+ *
+ * [Gui]
+ * ChatAutoSave=false
+ * ChatSaveUnsentMessages=false
+ * ChatSaveFileTransfers=false
+ * ChatSaveSystemMessages=false
+ *
+**/
+
+
+/***************************/
+/***  FILE: beebeep.rc   ***/
+/***************************/
+
+[BeeBEEP]
+EnableSaveData=[true/false] if disabled BeeBEEP doesn't save data at exit. It is useful if you want to share a computer with same user account and change nickname everytime (default=true) [3.0.4]
+UseConfigurationFileIni=[true/false] the program will read and save setting in a beebeep.ini if it is set to true otherwise the settings are saved in OS registry (default=true) [1.0.0]
+BroadcastOnlyToHostsIni=[true/false] if true BeeBEEP will search other users only in the IP addresses or Subnet listed in file beehost.ini (default=false) [1.0.0]
+BroadcastPort=[integer] is the UDP port used by BeeBEEP to contact other client in the local area network (default 36475)
+DefaultListenerPort=[integer] is the TCP port used by BeeBEEP to send chat message to the connected users (default 6475) [1.0.0]
+DefaultFileTransferPort=[integer] is the TCP port used by BeeBEEP to send file to the connected users (default 6476) [1.0.0]
+SaveDataInDocumentsFolder=[true/false] force BeeBEEP to save all data (settings and history) in USER/Documents/beebeep-data (in windows %userprofile%\Documents\beebeep-data) (default=false) [1.0.3]
+SaveDataInUserApplicationFolder=[true/false] force BeeBEEP to save all data (settings and history) in USER_APP_DATA/beebeep-data (in windows %appdata%\beebeep-data) (default=false) [1.0.3]
+AllowMultipleInstances=[true/false] enable the option to launch multiple instance of BeeBEEP (default=false) [1.0.0]
+DataFolderPath=(String "") you can specify the path of BeeBEEP data. In that folder will be saved history and settings (if UseConfigurationFileIni is true). It overrules SaveDataInDocumentsFolder and SaveDataInUserApplicationFolder.
+BackupFolderPath=(String "") you can specify the path of BeeBEEP backup files.
+AddAccountNameToDataFolder=[true/false] you can add account name to data folder. It is useful, for example, to store all BeeBEEP data in a single shared folder specified in DataFolderPath (default=false) [1.0.3]
+AddNicknameToDataFolder=[true/false] you can add nickname to data folder. It is useful, for example, to store all BeeBEEP data in a single shared folder specified in DataFolderPath (default=false) [5.8.4]
+UseMulticastDns=[true/false] if enabled BeeBEEP use Zero Configuration Networking (default=true in macosx, default=false in others)
+PreventMultipleConnectionsFromSingleHostAddress=[true/false] if enabled BeeBEEP blocks multiple connections from single IP address (default=true)
+PreferredSubnets=(Strings "" comma separated) you can specify your subnets. BeeBEEP search your default IP address in these entries (for example ="10.184.9.255,10.184.15.255") (default="") [3.0.1]
+UseIpv6=[true/false] enable Ipv6 protocol for connection (enable it if your network supports *only* IPv6... BeeBEEP works better in IPv4) (default=false)
+MulticastGroupAddress=(String "" Host Address) if not empty MulticastGroup is added to Broadcaster (default="")
+EnableChatWithAllUsers=[true/false] if enabled you can chat with all users connected by default (default=true)
+UseHive=[true/false] enable HIVE protocol. BeeBEEPs tell each other their connected users (default=true) [3.0.4]
+UseHostnameForDefaultUsername=[true/false] if enabled BeeBEEP uses hostname as default username at first startup (default=false) [3.0.6]
+HideMainToolbar=[true/false] If enabled BeeBEEP hide the main toolbar at startup (default=false) [3.0.6] [obsolete in 4.0.0]
+HideChatToolbar=[true/false] If enabled BeeBEEP hide the chat toolbar startup (default=false) [3.0.6] [obsolete in 4.0.0]
+HideUsersPanel=[true/false] If enabled BeeBEEP hide users panel at startup (default=false) [3.0.6] [obsolete in 4.0.0]
+HideOtherPanels=[true/false] If enabled BeeBEEP hide all other panels at startup (default=false) [3.0.6] [obsolete in 4.0.0]
+DisableFileTransfer=[true/false] disable file transfer and the file sharing (default=false) [3.0.6]
+DisableFileSharing=[true/false] disable the file sharing (default=false) [4.0.0]
+DisableDesktopSharing=[true/false] disable the desktop sharing (default=false) [5.6.9]
+DisableSendMessage=[true/false] disable send message. BeeBEEP becomes a read only messenger (default=false) [3.0.6]
+DisableVoiceMessages=[true/false] disable voice message recording (default=false) [5.7.1]
+UseEasyConnection=[true/false] BeeBEEP uses account name (if the nickname is not already set) and connects to the network with a standard session
+                              (the same of AskNicknameAtStartup=false and UseDefaultPassword=true AskPasswordAtStartup=false in beebeep.ini file) (default=false) [3.0.6]
+UseClassroomConfiguration=[true/false] BeeBEEP enables by default file and desktop sharing (default=false)[5.8.5]
+StartMinimized=[true/false] If enabled BeeBEEP starts minimized (can be overruled in beeebeep.ini) (default=false) [3.0.7]
+Signature=[string] If not empty BeeBEEP uses it to generate network password (all BeeBEEP clients in your network must have the same signature) (auth=signature+encpwd) (default="") [3.0.8]
+UseOnlyTextEmoticons=[true/false] If enabled BeeBEEP does not show the emoticon panel (default=false) [3.0.8]
+DisablePrivateChats=[true/false] disable private chat with users (default=false) [4.0.0]
+UserRecognitionMethod=[integer] 0: RecognizeByDefaultMethod      (default=0) [4.0.0]
+                                1: RecognizeByAccountAndDomain
+                                2: RecognizeByAccount
+                                3: RecognizeByNickname
+AllowAddMembersToGroup=[true/false] allow current user to create and add members to group (default=true) [5.4.0]
+AllowRemoveMembersFromGroup=[true/false] allow current user to remove members to group (default=true) [5.4.0]
+AllowEditNickname=[true/false] allow current user to edit his/her nickname. It is useful disabled with option UserRecognitionMethod=2 or UserRecognitionMethod=1 (default=true) [5.4.3]
+DisableCreateMessage=[true/false] if not disabled user can send broadcast messages without creating groups (default=false) [5.4.3]
+DisableMenuSettings=[true/false] hide the settings menu on top menu (default=false) [5.4.3]
+ClearCacheAfterDays=[integer] -1: never            (default=96) [5.6.5]
+                               0: always
+                             365: after 1 year
+RemovePartiallyDownloadedFilesAfterDays= [same as ClearCacheAfterDays]  (default=5) [5.7.7]
+CheckUserConnectedFromDatagramIp=[true/false] if true BeeBEEP checks if the user is connected also from ip parsed in datagram (default=true) [5.6.9]
+SkipLocalHardwareAddresses=[Strings "" comma separated] tells to BeeBEEP which hardware addresses (usually mac addresses) must to be skipped (default="") [5.6.9]
+UseOnlyMulticast=[true/false] if enabled BeeBEEP will multicast only in the MulticastGroupAddress (if empty it uses default 239.255.64.75) (default=false) [5.6.9]
+DisableEncryptedConnections=[true/false] if enabled BeeBEEP does not use encryption in its end-to-end connections. Use this option at your own risk and only if you know what you are doing... (default=false) [5.7.3]
+AllowNotEncryptedConnectionsAlso=[true/false] if enabled BeeBEEP accepts also NOT encrypted connections (default=false) [5.7.5]
+AllowEncryptedConnectionsAlso=[true/false] if enabled BeeBEEP accepts encrypted connections also if you have disabled encryption (default=false) [5.7.5]
+UseUserFullName=[true/false] if true BeeBEEP shows name and surname of the users if they are not empty (default=false) [5.7.5]
+AppendHostNameToUserName=[true/false] if true BeeBEEP appends host/computer name to the user name (default=false) [5.7.7]
+UseCompactDataSaving=[true/false] if true BeeBEEP skips saving not important system messages in chats (default=true) [5.7.7]
+DisableConnectionSocketDataCompression=[true/false] BeeBEEP compresses data with zlib before sending it (default=false) [5.7.7]
+DisableMulticast=[true/false] BeeBEEP skips to multicast if this option is enabled (default=false) [5.8.3] 
+AllowedFileExtensionsInFileTransfer=[Strings "" comma separated] used to allow file extensions in file transfer (for example: png, jpg, doc) (default="") [5.8.3]
+AllowOnlyHostAddressesFromHostsIni=[true/false] if true BeeBEEP accepts connections only from host addresses listed in file beehosts.ini (default=false) [5.8.3]
+ConnectionKeyExchangeMethod=[integer] 0: auto [5.8.3]
+                                      1: only ECDH with NIST K283 curve (128 bit)
+EnableReceivingHelpMessages=[true/false] if true BeeBEEP accepts help request messages (default=false) [5.8.5]
+UseKeepAliveOptionInSocket=[true/false] if true BeeBEEP uses KeepAlive option in sockets (default=false) [5.8.5]
+DisableSendFolder=[true/false] if true BeeBEEP disable the option to send folders in file transfer (default=false) [5.9.1]
+
+
+[Groups] (obsolete)
+TrustNickname=[true/false] if true BeeBEEP trusts also in nickname to recognize a user when he or she reconnect (default=true) [1.0.0] [obsolete in 4.0.0]
+TrustSystemAccount=[true/false] if true BeeBEEP trusts only system account to recognize a user. Useful if your are in active directory domain or similar (default=false) [obsolete in 4.0.0]
+
+/***********************************************************************************************************/
+/***  PLEASE NOTE                                                                                        ***/
+/***  Since BeeBEEP 5.8.3 almost all the option in file beebeep.ini can be used in file beebeep.rc also. ***/
+/***********************************************************************************************************/
+
+/***************************/
+/***  FILE: beebeep.ini  ***/
+/***************************/
+
+
+[Version]
+Program= BeeBEEP version major.minor.relese and build (b) and protocol (p)
+Proto= protocol version
+Settings= settings version
+DataStream= serialized data stream  version
+BeeBang= installation date or BeeBEEP first launch date
+
+[Chat]
+Font= font used in chat
+FontColor= font color used in chat
+DefaultChatBackgroundColor=[string] background color in default chat window
+CompactMessage= messages are displayed without a blank line from each other
+AddNewLineAfterMessage=[true/false] add a blank line after a message displayed [obsolete in 4.0.0]
+ShowMessageTimestamp=[true/false] show message timestamp in the chat
+BeepOnNewMessageArrived=[true/false] sound a beep when new message arrived (only if sound works) and the chat is not visible or active
+DisableBeepInUserStatusBusy=[true/false] disable beep sound when user status is busy (default=false) [5.7.5]
+EnableBeepInActiveWindow=[true/false] enable beep sound also when the chat window is active (default=false) [5.7.7]
+BeepAlwaysOnNewMessageArrived=[true/false] always sound a beep when new message arrived (only if sound works) [obsolete in 5.0.0]
+UseHtmlTags=[true/false] if enabled BeeBEEP doesn't parse tags html. Useful if you have to copy and paste in chat some html code
+UseClickableLinks=[true/false] enable link in chat message. So link clicked where opened by OS
+MessageHistorySize= how many of your messages are stored by BeeBEEP. The message can be recalled by CTRL+UP o CTRL+DOWN arrow
+ShowEmoticons=[true/false] show emoticon images in chat (only for text emojis)
+ShowMessagesGroupByUsers=[true/false] show messaged grouped by user or repeat user for every message
+AutoLinkSavedChatByNickname=[true/false] link the saved chat when nickname are equal
+ShowSendMessageIcon=[true/false] show the icon for sending message
+ShowOnlyMessagesInDefaultChat =[true/false] if enabled it will be showed only chat message, user info and history in the default chat (other messages in activity window)
+MessageFilter= filter messages in chat window by its type (do not edit here)
+UseKeyReturnToSendMessage=[true/false] enable key Return as shortcut to send a chat message
+UseYourNameInsteadOfYou=[true/false] your name is showed before messages instead of "you" (default=false) [3.0.6]
+ClearAllReadMessages=[true/false] clear all messages when you close chat window (default=false) [3.0.7]
+UseColoredUserNames=[true/false] colored user names are showed in chat (default=true) [4.2.0]
+DefaultUserNameColor=[string] default HTML color for user names (default=#000) [4.2.0]
+ActiveWindowOpacityLevel=[integer] percentage of opacity in the active chat window (default=100) [5.4.3]
+InactiveWindowOpacityLevel=[integer] percentage of opacity in the inactive chat window (default=85) [5.4.3]
+BackgroundColor=[string] background color of the chat window (default=#fff) [5.4.3]
+DefaultTextColor=[string] default text color of the chat window (default=#fff) [5.4.3]
+SystemTextColor=[string] system text color of the chat window (default=#fff) [5.4.3]
+EnableDefaultChatNotifications=[true/false] enable notifications for chat will all (default=true) [5.4.3]
+UseMessageTimestampWithAP=[true/false] chat message timestamp can be showed with am/pm suffix (default=false) [5.4.3]
+MaxMessagesToShow=[integer] maximum number of messages to show in chat for performance reason (default=800, -1 all) [5.6.5]
+CloseOnSendingMessage=[integer] on sending message the chat window is 0: do nothing (default), 1: minimized, 2: closed [5.6.9]
+EnableVisualNotificationsInChatWindow=[true/false] enable the visual notification of the chat window (default=true) [5.8.5]
+DisableTabInEditBox=[true/false] disable the key TAB and BACK_TAB in the message edit box (default=false) [5.9.1]
+
+[User]
+LocalColor= your nickname color in chat
+LocalLastStatus= your status (0 = Offline, 1 = Online, 2 = Busy, 3 = Away) [obsolete in 4.0.0]
+LocalLastStatusDescription= your status description
+AutoAwayStatus=[true/false] set your status away when pc is in idle
+UserAwayTimeout= how many minutes your pc must be in idle to set your status in away
+UseDefaultPassword=[true/false] use default BeeBEEP password
+AskNicknameAtStartup=[true/false] show nickname dialog at connection to BeeBEEP network (default=false) [3.0.5]
+AskPasswordAtStartup=[true/false] show password dialog at connection to BeeBEEP network
+MaxStatusInList=(10) maximum number of status used recently
+SaveUsers=[true/false] save the user list (default=true) [1.0.0]
+StatusList=[StringList]
+MaxStatusDescriptionInList=[integer]
+PresetMessages=[StringList] [3.0.9]
+RefusedChats=[StringList] [4.0.0]
+RecognitionMethod=[integer] see "UserRecognitionMethod" in beebeep.rc for more informations [4.0.0]
+RemoveInactiveUsers=[true/false] remove users inactive after some days (default=true) [4.2.0]
+MaxDaysOfUserInactivity=[integer] number of days before removing users (default=31) [4.2.0]
+
+[VCard]
+NickName= your nickname
+FirstName= your first name
+LastName= your last name
+Birthday= your birthday
+Email= your email
+Photo= your photo
+Phone= your phone numbers
+Info= other informations about you
+
+[Gui]
+MainBarIconSize= Icon size of the tool bar
+AvatarIconSize= Icon size of the avatar in user list
+Language= language used
+LastDirectorySelected=
+DownloadDirectory=
+LogPath=.
+PluginPath=.
+LocalePath=.
+KeyEscapeMinimizeInTray=[true/false] Escape key will minimize BeeBEEP into the system tray (default=true)
+MinimizeInTray=[true/false] Close button will minimize BeeBEEP into the system tray (default=true) [obsolete in 5.8.4]
+CloseMinimizeInTray=[true/false] Close button will minimize BeeBEEP into the system tray (default = true) [5.8.4]
+StayOnTop=[true/false]
+BeepFilePath=beep.wav
+RaiseOnNewMessageArrived=[true/false]
+LoadOnTrayAtStartup=[true/false]
+ShowNotificationOnTray=[true/false]
+ShowChatMessageOnTray=[true/false] (default=false) [3.0.5]
+TextSizeInChatMessagePreviewOnTray=[integer] (default=40) [3.0.5]
+ChatSaveDirectory=.
+ChatAutoSave=true
+TickIntervalChatAutoSave=[integer] time in seconds (default=61) [5.8.3]
+ChatMaxLineSaved=3000
+ChatSaveUnsentMessages=true (default=true) [5.6.3]
+ChatSaveFileTransfers=true (default=true) [5.6.5]
+ChatSaveSystemMessages=false (default=false) [5.6.5]
+MainWindowGeometry=(do not edit manually)
+MainWindowState=(do not edit manually)
+ChatSplitterState=(do not edit manually)
+FloatingChatGeometry=(do not edit manually)
+FloatingChatState=(do not edit manually)
+FloatingChatSplitterState=(do not edit manually)
+ShowHomeAsDefaultPage=[true/false] Show home page at start up (force user to click on available users to chat with them) [obsolete in 4.0.0]
+ShowTipsOfTheDay=[true/false]
+ShowOnlyOnlineUsers=[true/false] show only online users in user list
+ShowUserNameColor=[true/false] show nickname colored [obsolete in 4.0.0]
+ShowUserPhoto=[true/false] show user photo or avatar in user list
+ShowVCardOnRightClick=[true/false] show vCard when you right click on a user in list
+ResetWindowGeometryAtStartup=[true/false] reset geometry at startup (useful if some widget has an inusual geometry)
+ChatLinesToShow= number of lines to show in chat (working if the option below is enabled)
+ChatMaxLinesToShow= force chat to show only X messages (increase usability)
+ShowEmoticonMenu=[true/false] show the emoticon menu when the chat window is raised
+EmoticonSizeInEdit= emoticon size in message edit window (default: 18)
+EmoticonSizeInChat= emoticon size in chat windows (default: 24)
+EmoticonSizeInMenu= emoticon size in menu (default: 24)
+EmoticonsInRecentMenu=[integer] the maximum number of emoticons in recent menu (default: 48) [4.0.0]
+EnableMaximizeButton=[true/false] enable maximize button on main window (default:false) [5.4.1]
+LoadMinimizedAtStartup= if enabled BeeBEEP is load minimized at startup
+PromptOnCloseEvent=[true/false] enable it if you want to be asked on closing (it prompts only if BeeBEEP is connected)
+ShowMinimizedAtStartup=[true/false] show minimized at start up
+AlwaysOpenNewFloatingChat=[true/false] open always chat in a new floating window [obsolete in 4.0.0]
+ShowUserStatusBackgroundColor=[true/false] show background color for status in user list
+ShowUserStatusDescription=[true/false] show the user status description in user list (default=false) [4.0.0]
+UseShortcuts=[true/false] enable shortcuts in application
+Shortcuts=(do not edit manually)
+UseNativeDialogs=[true/false] enable native OS dialogs (in some case these native dialogs can be modal and cause connection timeout)
+ShowActivitiesTimestamp=[true/false] (default=false) [4.0.0]
+UsePreviewFileDialog=[true/false] (default=true only in windows, in other os false) [3.0.4]
+PreviewFileDialogGeometry=(do not edit manually) [3.0.5]
+PreviewFileDialogImageSize=[integer] (default=200) [3.0.5]
+TextSizeInChatMessagePreviewOnTray=[integer] (default=40) [3.0.7]
+ShowFileTransferCompletedOnTray=[true/false] (default=true) [3.0.7]
+UserSortingMode=[integer] it defines the mode of users sorting (0=default) [3.0.8]
+SortUsersAscending=[true/false] if not true the users are sorting in descending mode [3.0.8]
+ShowPresetMessages=[true/false] if true the preset messages list is showed [3.0.8]
+ShowChatTextInModeRTL=[true/false] if true the layout direction in chat is RTL (default=false) [3.0.8]
+PlayBuzzSound=[true/false] if true a user can send you a buzz alert (default=true) [3.0.9]
+ShowChatsInOneWindow=[true/false] if true BeeBEEP opens chats in a single window (default=false) [4.0.0]
+IconSourcePath=[string] folder path for custom icons (default=empty string) [4.0.0]
+EmoticonSourcePath=[string] folder path for custom emoticons (default=empty string) [4.0.0]
+HomeBackgroundColor=[string] html background color (default=#f5f5f5) [4.0.0]
+UserListBackgroundColor=[string] html background color (default=#ffffff) [4.2.0]
+ChatListBackgroundColor=[string] html background color (default=#ffffff) [4.2.0]
+GroupListBackgroundColor=[string] html background color (default=#ffffff) [4.2.0]
+SavedChatListBackgroundColor=[string] html background color (default=#ffffff) [4.2.0]
+ShowUsersOnConnection=[true/false] if true the user list is showed on connection (default=false) [5.1.4]
+ShowChatsOnConnection=[true/false] if true the chat list is showed on connection (default=false) [5.6.1]
+HideEmptyChatsInList=[true/false] if true the empty chats are hidden in the chat list (default=false, from 5.8.5) [5.6.1]
+UseDarkStyle=[true/false] if true BeeBEEP uses dark style theme [5.4.3]
+RaiseOnNewFileTransfer=[true/false] if true on new file transfer BeeBEEP raises itself on top (default=true) [5.6.0]
+ShowUsersInWorkgroups=[true/false] if true the users in user list will be shown in their workgroups (default=false) [5.65]
+OpenChatWhenSendNewMessage=[true/false] used in "Create message" window (default=true) [5.6.5]
+SendNewMessageIndividually=[true/false] used in "Create message" window (default=true) [5.6.5]
+UseUserFirstNameFirstInFullName=[true/false] if false BeeBEEP show users in format lastname firstname (default=true) [5.8.3]
+ResetMinimumWidthForStyle=[true/false] if true BeeBEEP changes its mimimum width for the style applied (default=true) [5.8.3]
+CreateTextCodeAsFile=[true/false] if true BeeBEEP sends code as file (default=false) [5.8.5]
+CreateTextCodeAsTemporaryFile=[true/false] if true BeeBEEP and previous option is true, the file create is temporary (default=true) [5.8.5]
+CreateTextCodeFileSuffix=[string] file extension/suffix for code to send (default=txt) [5.8.5]
+
+[Tools]
+LogToFile=[true/false] enable file logging
+MaxLogLines=[integer] max lines to show in log [4.0.0]
+UseSpellChecker=[true/false] enable spell checking on writing message
+UseWordCompleter=[true/false] enable word completer on writing message
+DictionaryPath=(String) path to dictionary. It is accepted only file with extension .dic
+SearchForNewVersionAtStartup=[true/false] enable check for new version at BeeBEEP startup (default=false on win) [3.0.4]
+PostUsageStatistics= [true/false] add +1 user to anonymous usage statistics (default=true) [3.0.5]
+Uuid= [string] application UUID for anonymous statistics [3.0.5]
+
+[Misc]
+TickIntervalCheckIdle=10
+TickIntervalCheckNetwork=7
+TickIntervalBroadcasting=[integer] is the tick interval (seconds) from a broadcast and another (default is disabled=0) [3.0.8]
+BroadcastInterval= is the interval from a broadcast and another (default is disabled=0) [obsolete 3.0.8+]
+ListenerPort= is the last TCP port of chat communication between BeeBEEP (default is 6475)
+ConnectionActivityTimeout_ms=30000
+MessageNotReceivedTimeout_ms=7000
+WritingTimeout=3000
+SystemTrayMessageTimeout=2000
+ConnectionTimeout=5000
+UseLowDelayOptionOnSocket=[true/false] Try to optimize the socket for low latency. For a QTcpSocket this would set the TCP_NODELAY option and disable Nagle's algorithm (default=false) [3.0.5]
+DelayConnectionAtStartup(ms)=[integer] sometimes BeeBEEP starts before the network so you can delay connection (default=3000) [4.2.0]
+SendOfflineMessagesToDefaultChat=[true/false] Send offline messages to default chat (all users) also (default=false) [4.2.0]
+ClearCacheAfterDays=[integer] see above (default 96) [5.6.5]
+RemovePartiallyDownloadedFilesAfterDays=[integer] see above (default 5) [5.7.7]
+DelayContactUsers_ms=9000
+
+[Network]
+BroadcastAddresses=(do not edit manually)
+LocalHostAddressForced= if BeeBEEP doesn't recognize your IP address automatically, you can set here your IP (useful if you have a lot of network configured)
+LocalSubnetForced= if BeeBEEP doesn't recognize your subnet address automatically, you can set here your subnet (useful if you have a lot of network configured)
+ParseBroadcastAddresses=[true/false] if true BeeBEEP splits subnet like 192.168.2.255 to a list of ip addresses from 192.168.2.1 to 192.168.2.254 [obsolete 3.0.8+]
+ParseBroadcastAddressesAll=[true/false] if true BeeBEEP splits subnet (also local subnet) like 192.168.2.255 to a list of ip addresses from 192.168.2.1 to 192.168.2.254 [obsolete 3.0.8+]
+AddExternalSubnetAutomatically=[true/false] if true BeeBEEP automatically add external user's subnet when they reach you [obsolete 3.0.8+]
+UserPathList= users saved (do not edit manually)
+AcceptConnectionsOnlyFromWorkgroups=[true/false] accepts connection only from members of your workgroups
+Workgroups = workgroups saved (do not edit manually)
+UseMulticastDns=[true/false] if enabled BeeBEEP use Zero Configuration Networking (it overwrites RC option) (default=true in macosx, default=false in others os)
+AutoSearchUsersWhenListIsEmpty=[true/false] if enabled BeeBEEP search for users when there aren't users connected (default=true) [3.0.5] [obsolete 3.0.8+]
+DisableSystemProxyForConnections=[true/false] if enabled BeeBEEP disable the proxy for local connections (default=false) [5.0.1]
+UseDefaultMulticastGroupAddress=[true/false] if enabled BeeBEEP joins the default multicast group address (default=true) [5.2.0]
+BroadcastToOfflineUsers=[true/false] if enabled BeeBEEP adds also offline users to broadcast list (default=false) [5.4.3]
+BroadcastToLocalSubnet=[true/false] if enabled BeeBEEP always broadcast to local subnet (default=false) [5.7.5]
+IpMulticastTtl=[integer] multicast ttl option for IPv4 udp socket 1,2,4,8...255 (default=1) [5.6.0]
+
+[FileShare]
+FileTransferIsEnabled=[true/false] enable file transfer/sharing/box (default=true) [3.0.6] [obsolete in 4.0.0]
+EnableFileTransfer=[true/false] enable file transfer/sharing/box <can be overruled by rc file> (default=true) [4.0.0]
+EnableFileSharing=[true/false] enable file sharing/box <can be overruled by rc file> (default=false) [4.0.0]
+UseShareBox=[true/false] enable share box (default=false) [3.0.7]
+ShareBoxPath=[string] path of the box shared (default="") [3.0.7]
+SetAutomaticFileName=[true/false] on saving downloaded file BeeBEEP, if a file with the same name exists, add a number at the end and save it [obsolete 5.8.3+]
+MaxSimultaneousDownloads= is the max number of simultaneous downloads in file transfer
+MaxQueuedDownloads = is the max number of downloads can be selected in file sharing at once
+MaxSharedFiles=[integer] is the max number of shared files for user (default=4096) [4.0.0]
+FileTransferConfirmTimeout=30000
+FileTransferBufferSize=65456
+ConfirmOnDownloadFile=[true/false] if it is true always prompt before downloading a file
+DownloadInUserFolder=[true/false] if it is true BeeBEEP always download files into the folder with the user's name (default=false) [5.6.5]
+ShareList=(do not edit manually)
+OnExistingFileAction=[integer] 0: GenerateNewFileName (default=0) [5.8.3]
+                               1: SkipExistingFile
+                               2: OverwriteExistingFile
+                               3: OverwriteOlderExistingFile
+                               4: OverwriteDifferentSizeExistingFile
+KeepModificationDateOnFileTransferred=[true/false] if it is true BeeBEEP keeps the modification date of the original file [5.8.3]
+
+[ShareDesktop]
+Enable=[true/false] enable file desktop sharing (default=true) [4.2.0]
+CaptureScreenInterval=[integer] interval in ms of capture screen (default=2100) [4.2.0]
+FitToScreen=[true/false] fit desktop image from remote user in your screen (default=true, from 5.8.5) [4.2.0]
+ImageType=[string] is better to use jpg or png (default=png) [4.2.0]
+ImageQuality=[integer] image quality of jpg format, in case of png use 100 (default=60) [4.2.0]
+
+[VoiceMessage]
+MaxDuration=[integer] the max duration of voice message in seconds (default=100) [5.7.1]
+UseVoicePlayer=[true/false] use the integrated player to listen voice messages (default=true) [5.7.1]
+

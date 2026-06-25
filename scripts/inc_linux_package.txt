@@ -1,0 +1,63 @@
+#!/bin/sh
+#
+# This file is part of BeeBEEP.
+#
+# BeeBEEP is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published
+# by the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# BeeBEEP is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with BeeBEEP.  If not, see <http:#www.gnu.org/licenses/>.
+#
+# Author: Marco Mastroddi <marco.mastroddi(AT)gmail.com>
+#
+# $Id: inc_linux_package.txt 1485 2021-01-25 09:41:30Z mastroddi $
+#
+######################################################################
+
+BEEBEEP_VERSION="5.8.6"
+BASE_FOLDER=".."
+RELEASE_FOLDER="beebeep-${BEEBEEP_VERSION}-${BEEBEEP_QT_VERSION}-${BEEBEEP_ARCH_TYPE}"
+
+echo "Cleaning previous packages with the same name..."
+rm -rf *.deb
+rm -rf *.lintian
+sudo rm -rf DEBIAN
+rm -rf $RELEASE_FOLDER
+rm -rf $RELEASE_FOLDER.tar.gz
+echo "Making $RELEASE_FOLDER ..."
+mkdir $RELEASE_FOLDER
+echo "Copying PNG..."
+cp $BASE_FOLDER/src/images/beebeep.png $RELEASE_FOLDER
+echo "Copying locales..."
+cp $BASE_FOLDER/locale/*.qm $RELEASE_FOLDER
+echo "Removing xx locale..."
+rm $RELEASE_FOLDER/beebeep_xx.qm
+echo "Copying CHANGELOG..."
+cp $BASE_FOLDER/CHANGELOG.txt $RELEASE_FOLDER
+echo "Copying README-LINUX..."
+cp $BASE_FOLDER/README-LINUX.txt $RELEASE_FOLDER
+echo "Copying HELP..."
+cp $BASE_FOLDER/BEEBEEP-HELP.txt $RELEASE_FOLDER
+echo "Copying Examples..."
+cp $BASE_FOLDER/misc/beebeep_example.rc $RELEASE_FOLDER
+cp $BASE_FOLDER/misc/beehosts_example.ini $RELEASE_FOLDER
+echo "Copying sound..."
+cp $BASE_FOLDER/misc/beep.wav $RELEASE_FOLDER
+echo "Copying Plugins..."
+chmod a-x $BASE_FOLDER/test/*.so
+cp $BASE_FOLDER/test/libnumbertextmarker.so $RELEASE_FOLDER
+cp $BASE_FOLDER/test/librainbowtextmarker.so $RELEASE_FOLDER
+cp $BASE_FOLDER/test/libregularboldtextmarker.so $RELEASE_FOLDER
+chmod a-x $RELEASE_FOLDER/*.so
+echo "Copying Executable..."
+cp $BASE_FOLDER/test/beebeep $RELEASE_FOLDER
+echo "Making tar.gz package..."
+tar zcvf $RELEASE_FOLDER.tar.gz $RELEASE_FOLDER
+echo "Done."
