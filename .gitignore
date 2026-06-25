@@ -4,7 +4,6 @@ build/
 Makefile
 *.o
 *.obj
-*.qm
 moc_*.cpp
 qrc_*.cpp
 ui_*.h
@@ -34,9 +33,6 @@ CMakeLists.txt.user*
 *.buildinfo
 *.changes
 *.lintian
-
-# Translations source (not needed in repo, .qm is generated)
-locale/*.ts
 
 # Script outputs
 scripts/*.tar.gz
