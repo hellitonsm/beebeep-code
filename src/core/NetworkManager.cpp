@@ -30,7 +30,7 @@ NetworkManager* NetworkManager::mp_instance = Q_NULLPTR;
 
 NetworkManager::NetworkManager()
   : m_localHostAddress(), m_localBroadcastAddress(), m_localHostAddressScopeId( "" ),
-    m_localInterfaceHardwareAddress( "" ), m_networkEntries()
+    m_localInterfaceHardwareAddress( "" ), m_networkEntries(), m_ipv6Available( false )
 {
 }
 
@@ -154,6 +154,7 @@ bool NetworkManager::searchLocalHostAddress()
   m_localBroadcastAddress = QHostAddress();
   m_localHostAddressScopeId = "";
   m_localInterfaceHardwareAddress = "";
+  m_ipv6Available = false;
   if( !m_networkEntries.isEmpty() )
     m_networkEntries.clear();
 
@@ -388,8 +389,32 @@ bool NetworkManager::isHostAddressInBroadcastSubnet( const QHostAddress& host_ad
 #ifdef BEEBEEP_DEBUG
       qDebug() << "Host address" << host_address.toString() << "is not in broadcast subnet" << broadcast_subnet;
 #endif
-      return false;
+  return false;
+}
+
+bool NetworkManager::isIPv6Available() const
+{
+  if( m_ipv6Available )
+    return true;
+
+  QList<QNetworkInterface> interface_list = QNetworkInterface::allInterfaces();
+  foreach( QNetworkInterface if_net, interface_list )
+  {
+    if( !(if_net.flags() & QNetworkInterface::IsUp) )
+      continue;
+    QList<QNetworkAddressEntry> address_entries = if_net.addressEntries();
+    foreach( QNetworkAddressEntry address_entry, address_entries )
+    {
+      if( address_entry.ip().protocol() == QAbstractSocket::IPv6Protocol )
+      {
+        m_ipv6Available = true;
+        return true;
+      }
     }
+  }
+  return false;
+}
+
   }
 
 #ifdef BEEBEEP_DEBUG

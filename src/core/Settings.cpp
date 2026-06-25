@@ -25,6 +25,7 @@
 #include "BeeUtils.h"
 #include "ChatMessage.h"
 #include "NetworkAddress.h"
+#include "NetworkManager.h"
 #include "Random.h"
 #include "Settings.h"
 #include "Version.h"
@@ -844,6 +845,16 @@ QHostAddress Settings::defaultMulticastGroupAddress() const
   return m_useIPv6 ? QHostAddress( QString( DEFAULT_IPV6_MULTICAST_ADDRESS ) ) : QHostAddress( QString( DEFAULT_IPV4_MULTICAST_ADDRESS ) );
 }
 
+QList<QHostAddress> Settings::defaultMulticastGroupAddresses() const
+{
+  QList<QHostAddress> groups;
+  if( !m_useIPv6 || NetworkManager::instance().isIPv6Available() )
+    groups.append( QHostAddress( QString( DEFAULT_IPV4_MULTICAST_ADDRESS ) ) );
+  if( NetworkManager::instance().isIPv6Available() )
+    groups.append( QHostAddress( QString( DEFAULT_IPV6_MULTICAST_ADDRESS ) ) );
+  return groups;
+}
+
 QString Settings::programName() const
 {
   return QString( BEEBEEP_NAME );
@@ -1060,13 +1071,18 @@ QString Settings::currentHash() const
 
 QHostAddress Settings::hostAddressToListen()
 {
-  return m_useIPv6 ? QHostAddress::Any : QHostAddress::AnyIPv4;
+  if( m_useIPv6 )
+    return QHostAddress::Any;
+  return NetworkManager::instance().isIPv6Available() ? QHostAddress::Any : QHostAddress::AnyIPv4;
 }
 
 void Settings::setLocalUserHost( const QHostAddress& host_address, quint16 host_port )
 {
   if( host_address.isNull() || host_address.toString() == QString( "0.0.0.0" ) )
-    m_localUser.setNetworkAddress( NetworkAddress( m_useIPv6 ? QHostAddress::LocalHostIPv6 : QHostAddress::LocalHost, host_port ) );
+  {
+    bool use_ipv6 = m_useIPv6 || NetworkManager::instance().isIPv6Available();
+    m_localUser.setNetworkAddress( NetworkAddress( use_ipv6 ? QHostAddress::LocalHostIPv6 : QHostAddress::LocalHost, host_port ) );
+  }
   else
     m_localUser.setNetworkAddress( NetworkAddress( host_address, host_port ) );
 }

@@ -51,6 +51,7 @@ public:
   inline bool isInLocalBroadcastAddresses( const QHostAddress& ) const;
 
   bool isHostAddressAllowed( const QHostAddress& ) const;
+  bool isIPv6Available() const;
 
   inline bool networkInterfaceCanBroadcast( const QNetworkInterface& ) const;
   inline bool networkInterfaceCanMulticast( const QNetworkInterface& ) const;
@@ -91,6 +92,7 @@ private:
   QString m_localHostAddressScopeId;
   QString m_localInterfaceHardwareAddress;
   QList<NetworkEntry> m_networkEntries;
+  mutable bool m_ipv6Available;
 
 };
 

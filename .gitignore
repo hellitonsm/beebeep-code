@@ -1,5 +1,6 @@
 # Build output
 test/
+.qmake.stash
 build/
 Makefile
 *.o

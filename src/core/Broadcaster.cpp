@@ -31,7 +31,7 @@
 
 Broadcaster::Broadcaster( QObject *parent )
   : QObject( parent ), m_networkAddresses(), m_newBroadcastRequested( false ),
-    m_networkAddressesWaitingForLoopback(), m_multicastGroupAddress(), m_isMulticastDatagramSent( false ),
+    m_networkAddressesWaitingForLoopback(), m_multicastGroupAddresses(), m_isMulticastDatagramSent( false ),
     m_lastDatagramSentTimestamp(), m_networkAddressesIsSorted( false )
 {
   mp_broadcastSocket = new QUdpSocket( this );
@@ -50,26 +50,31 @@ bool Broadcaster::startBroadcastServer()
   if( Settings::instance().disableMulticast() )
   {
     qDebug() << "Broadcaster found multicast option disabled";
-    m_multicastGroupAddress = QHostAddress();
   }
   else
   {
-    m_multicastGroupAddress = Settings::instance().useDefaultMulticastGroupAddress() ? Settings::instance().defaultMulticastGroupAddress() : Settings::instance().multicastGroupAddress();
-    if( !m_multicastGroupAddress.isNull() )
+    m_multicastGroupAddresses.clear();
+    if( Settings::instance().useDefaultMulticastGroupAddress() )
+      m_multicastGroupAddresses = Settings::instance().defaultMulticastGroupAddresses();
+    else
     {
-      if( !Settings::instance().useIPv6() )
+      QHostAddress custom_addr = Settings::instance().multicastGroupAddress();
+      if( !custom_addr.isNull() )
+        m_multicastGroupAddresses.append( custom_addr );
+    }
+
+    if( !m_multicastGroupAddresses.isEmpty() )
+    {
+      if( Settings::instance().ipMulticastTtl() > 0 && Settings::instance().ipMulticastTtl() < 256 )
       {
-        if( Settings::instance().ipMulticastTtl() > 0 && Settings::instance().ipMulticastTtl() < 256 )
-        {
-          qDebug() << "Broadcaster UDP Socket uses Multicast TTL Option" << Settings::instance().ipMulticastTtl();
-          mp_broadcastSocket->setSocketOption( QAbstractSocket::MulticastTtlOption, Settings::instance().ipMulticastTtl() );
-        }
-        else
-        {
-          qWarning() << Settings::instance().ipMulticastTtl() << "is an invalid value for Multicast TTL option";
-          qDebug() << "Broadcaster UDP Socket uses default Multicast TTL Option" << DEFAULT_IPV4_MULTICAST_TTL_OPTION;
-          mp_broadcastSocket->setSocketOption( QAbstractSocket::MulticastTtlOption, DEFAULT_IPV4_MULTICAST_TTL_OPTION );
-        }
+        qDebug() << "Broadcaster UDP Socket uses Multicast TTL Option" << Settings::instance().ipMulticastTtl();
+        mp_broadcastSocket->setSocketOption( QAbstractSocket::MulticastTtlOption, Settings::instance().ipMulticastTtl() );
+      }
+      else
+      {
+        qWarning() << Settings::instance().ipMulticastTtl() << "is an invalid value for Multicast TTL option";
+        qDebug() << "Broadcaster UDP Socket uses default Multicast TTL Option" << DEFAULT_IPV4_MULTICAST_TTL_OPTION;
+        mp_broadcastSocket->setSocketOption( QAbstractSocket::MulticastTtlOption, DEFAULT_IPV4_MULTICAST_TTL_OPTION );
       }
 
       int multicast_interfaces = 0;
@@ -94,19 +99,21 @@ bool Broadcaster::startBroadcastServer()
 
             if( !add_this_hw_address )
             {
-              qDebug() << "Broadcaster skips to join to the multicast group" << qPrintable( m_multicastGroupAddress.toString() )
-                       << "in network interface" << qPrintable( hardware_address );
+              qDebug() << "Broadcaster skips to join to the multicast groups in network interface" << qPrintable( hardware_address );
               continue;
             }
           }
 
           if( !Settings::instance().isLocalHardwareAddressToSkip( hardware_address ) )
           {
-            if( mp_broadcastSocket->joinMulticastGroup( m_multicastGroupAddress, if_net ) )
+            foreach( QHostAddress mgroup, m_multicastGroupAddresses )
             {
-              qDebug() << "Broadcaster joins to the multicast group" << qPrintable( m_multicastGroupAddress.toString() )
-                       << "in network interface" << qPrintable( hardware_address );
-              multicast_interfaces++;
+              if( mp_broadcastSocket->joinMulticastGroup( mgroup, if_net ) )
+              {
+                qDebug() << "Broadcaster joins to the multicast group" << qPrintable( mgroup.toString() )
+                         << "in network interface" << qPrintable( hardware_address );
+                multicast_interfaces++;
+              }
             }
           }
         }
@@ -114,13 +121,15 @@ bool Broadcaster::startBroadcastServer()
 
       if( multicast_interfaces == 0 )
       {
-        if( !mp_broadcastSocket->joinMulticastGroup( m_multicastGroupAddress ) )
+        foreach( QHostAddress mgroup, m_multicastGroupAddresses )
         {
-          qWarning() << "Broadcaster cannot join to the multicast group" << qPrintable( m_multicastGroupAddress.toString() ) << "in default network interface";
-          m_multicastGroupAddress = QHostAddress();
+          if( !mp_broadcastSocket->joinMulticastGroup( mgroup ) )
+          {
+            qWarning() << "Broadcaster cannot join to the multicast group" << qPrintable( mgroup.toString() ) << "in default network interface";
+          }
+          else
+            qDebug() << "Broadcaster joins to the multicast group" << qPrintable( mgroup.toString() ) << "in default network interface";
         }
-        else
-          qDebug() << "Broadcaster joins to the multicast group" << qPrintable( m_multicastGroupAddress.toString() ) << "in default network interface";
       }
     }
   }
@@ -139,7 +148,7 @@ void Broadcaster::stopBroadcasting()
 
   if( mp_broadcastSocket->state() == QAbstractSocket::BoundState )
   {
-    if( !m_multicastGroupAddress.isNull() )
+    if( !m_multicastGroupAddresses.isEmpty() )
     {
       int multicast_interfaces = 0;
       QList<QNetworkInterface> interface_list = QNetworkInterface::allInterfaces();
@@ -150,10 +159,13 @@ void Broadcaster::stopBroadcasting()
           QString hardware_address = if_net.hardwareAddress();
           if( !Settings::instance().isLocalHardwareAddressToSkip( hardware_address ) )
           {
-            if( mp_broadcastSocket->leaveMulticastGroup( m_multicastGroupAddress, if_net ) )
+            foreach( QHostAddress mgroup, m_multicastGroupAddresses )
             {
-              multicast_interfaces++;
-              qDebug() << "Leave from the multicast group" << qPrintable( m_multicastGroupAddress.toString() ) << "in network interface" << qPrintable( hardware_address );
+              if( mp_broadcastSocket->leaveMulticastGroup( mgroup, if_net ) )
+              {
+                multicast_interfaces++;
+                qDebug() << "Leave from the multicast group" << qPrintable( mgroup.toString() ) << "in network interface" << qPrintable( hardware_address );
+              }
             }
           }
         }
@@ -161,10 +173,13 @@ void Broadcaster::stopBroadcasting()
 
       if( multicast_interfaces == 0 )
       {
-        if( mp_broadcastSocket->leaveMulticastGroup( m_multicastGroupAddress ) )
-          qDebug() << "Leave from the multicast group" << qPrintable( m_multicastGroupAddress.toString() ) << "in default network interface";
-        else
-          qWarning() << "Unable to leave from the multicast group" << qPrintable( m_multicastGroupAddress.toString() ) << "in default network interface";
+        foreach( QHostAddress mgroup, m_multicastGroupAddresses )
+        {
+          if( mp_broadcastSocket->leaveMulticastGroup( mgroup ) )
+            qDebug() << "Leave from the multicast group" << qPrintable( mgroup.toString() ) << "in default network interface";
+          else
+            qWarning() << "Unable to leave from the multicast group" << qPrintable( mgroup.toString() ) << "in default network interface";
+        }
       }
     }
     mp_broadcastSocket->close();
@@ -258,7 +273,7 @@ void Broadcaster::checkLoopbackDatagram()
     if( it->second.msecsTo( QDateTime::currentDateTime() ) > 5600 )
     {
       qWarning() << "Broadcaster didn't received yet a loopback datagram from" << qPrintable( it->first.toString() );
-      if( !m_multicastGroupAddress.isNull() && it->first.hostAddress() == m_multicastGroupAddress && !Settings::instance().broadcastToLocalSubnetAlways() )
+      if( !m_multicastGroupAddresses.isEmpty() && m_multicastGroupAddresses.contains( it->first.hostAddress() ) && !Settings::instance().broadcastToLocalSubnetAlways() )
       {
         qDebug() << "Broadcaster also tries to send to datagram to local address" << qPrintable( NetworkManager::instance().localBroadcastAddress().toString() );
         addHostAddress( NetworkManager::instance().localBroadcastAddress() );
@@ -402,10 +417,15 @@ QList<NetworkAddress> Broadcaster::updateAddressesToSearchUsers()
 
   if( Settings::instance().useOnlyMulticast() )
   {
-    if( m_multicastGroupAddress.isNull() )
+    if( m_multicastGroupAddresses.isEmpty() )
       qWarning() << "Multicast only option enabled but the multicast group address is empty";
     else
-      qDebug() << "Multicast only to" << qPrintable( m_multicastGroupAddress.toString() ) << "(option in RC enabled)";
+    {
+      QStringList group_list;
+      foreach( QHostAddress a, m_multicastGroupAddresses )
+        group_list.append( a.toString() );
+      qDebug() << "Multicast only to" << qPrintable( group_list.join( ", " ) ) << "(option in RC enabled)";
+    }
     return network_address_list;
   }
 
@@ -527,26 +547,32 @@ void Broadcaster::onTickEvent( int )
 
 bool Broadcaster::sendMulticastDatagram()
 {
-  if( m_isMulticastDatagramSent )
-    return true;
-  if( !m_multicastGroupAddress.isNull() && !Settings::instance().disableMulticast() )
+  if( m_isMulticastDatagramSent || m_multicastGroupAddresses.isEmpty() )
+    return m_isMulticastDatagramSent || m_multicastGroupAddresses.isEmpty();
+  if( Settings::instance().disableMulticast() )
+    return false;
+
+  bool all_sent = true;
+  foreach( QHostAddress mgroup, m_multicastGroupAddresses )
   {
-    QByteArray broadcast_data = Protocol::instance().broadcastMessage( m_multicastGroupAddress );
-    if( mp_broadcastSocket->writeDatagram( broadcast_data, m_multicastGroupAddress, static_cast<quint16>(Settings::instance().defaultBroadcastPort()) ) > 0 )
+    QByteArray broadcast_data = Protocol::instance().broadcastMessage( mgroup );
+    if( mp_broadcastSocket->writeDatagram( broadcast_data, mgroup, static_cast<quint16>(Settings::instance().defaultBroadcastPort()) ) > 0 )
     {
-      qDebug() << "Broadcaster sends multicast datagram to" << qPrintable( m_multicastGroupAddress.toString() ) << Settings::instance().defaultBroadcastPort();
-      m_networkAddressesWaitingForLoopback.append( QPair<NetworkAddress, QDateTime>( NetworkAddress( m_multicastGroupAddress, static_cast<quint16>( Settings::instance().defaultBroadcastPort() ) ), QDateTime::currentDateTime() ) );
+      qDebug() << "Broadcaster sends multicast datagram to" << qPrintable( mgroup.toString() ) << Settings::instance().defaultBroadcastPort();
+      m_networkAddressesWaitingForLoopback.append( QPair<NetworkAddress, QDateTime>( NetworkAddress( mgroup, static_cast<quint16>( Settings::instance().defaultBroadcastPort() ) ), QDateTime::currentDateTime() ) );
       m_lastDatagramSentTimestamp = QDateTime::currentDateTime();
-      m_isMulticastDatagramSent = true;
 #ifdef BEEBEEP_DEBUG
-      qDebug() << "Waiting for loopback datagram from" << qPrintable( m_multicastGroupAddress.toString() );
+      qDebug() << "Waiting for loopback datagram from" << qPrintable( mgroup.toString() );
 #endif
-      return true;
     }
     else
-      qWarning() << "Unable to send multicast datagram to" << qPrintable( m_multicastGroupAddress.toString() ) << Settings::instance().defaultBroadcastPort();
+    {
+      qWarning() << "Unable to send multicast datagram to" << qPrintable( mgroup.toString() ) << Settings::instance().defaultBroadcastPort();
+      all_sent = false;
+    }
   }
-  return false;
+  m_isMulticastDatagramSent = all_sent;
+  return all_sent;
 }
 
 void Broadcaster::contactNetworkAddresses()

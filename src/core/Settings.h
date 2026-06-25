@@ -154,6 +154,7 @@ public:
   QHostAddress hostAddressToListen();
   inline const QHostAddress& multicastGroupAddress() const;
   QHostAddress defaultMulticastGroupAddress() const;
+  QList<QHostAddress> defaultMulticastGroupAddresses() const;
   inline void setIpMulticastTtl( int );
   inline int ipMulticastTtl() const;
   inline int defaultBroadcastPort() const;

@@ -41,7 +41,7 @@ public:
 
   void updateUsersAddedManually();
   int updateUsersFromHive();
-  inline const QHostAddress& multicastGroupAddress() const;
+  inline QHostAddress multicastGroupAddress() const;
 
   inline bool addNetworkAddress( const NetworkAddress& );
 
@@ -74,7 +74,7 @@ private:
   QList<NetworkAddress> m_networkAddresses;
   bool m_newBroadcastRequested;
   QList< QPair<NetworkAddress, QDateTime> > m_networkAddressesWaitingForLoopback;
-  QHostAddress m_multicastGroupAddress;
+  QList<QHostAddress> m_multicastGroupAddresses;
   bool m_isMulticastDatagramSent;
   QDateTime m_lastDatagramSentTimestamp;
   bool m_networkAddressesIsSorted;
@@ -83,7 +83,7 @@ private:
 
 // Inline Functions
 inline bool Broadcaster::addHostAddress( const QHostAddress& ha ) { return ha.isNull() ? false : addNetworkAddress( NetworkAddress( ha, 0 ), false ); }
-inline const QHostAddress& Broadcaster::multicastGroupAddress() const { return m_multicastGroupAddress; }
+inline QHostAddress Broadcaster::multicastGroupAddress() const { return m_multicastGroupAddresses.isEmpty() ? QHostAddress() : m_multicastGroupAddresses.first(); }
 inline bool Broadcaster::addNetworkAddress( const NetworkAddress& na ) { return addNetworkAddress( na, false ); }
 
 #endif // BEEBEEP_BROADCASTER_H

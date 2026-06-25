@@ -25,6 +25,7 @@
 #include "MDnsBrowser.h"
 #include "MDnsRegister.h"
 #include "MDnsResolver.h"
+#include "NetworkManager.h"
 #include "Settings.h"
 
 
@@ -139,7 +140,7 @@ void MDnsManager::addNetworkAddress( const NetworkAddress& na )
     return;
   }
 
-  if( na.isIPv6Address() && !Settings::instance().useIPv6() )
+  if( na.isIPv6Address() && !NetworkManager::instance().isIPv6Available() )
   {
 #ifdef BEEBEEP_DEBUG
     qDebug() << qPrintable( objectName() ) << "skips user record with IPV6 address" << qPrintable( na.toString() );
