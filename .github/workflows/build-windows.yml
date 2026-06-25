@@ -3,7 +3,6 @@ name: Build Windows (64-bit) + Installer
 on:
   push:
     branches: [ main, master ]
-    tags: [ 'v*' ]
   pull_request:
     branches: [ main, master ]
   workflow_dispatch:
