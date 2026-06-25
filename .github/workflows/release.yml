@@ -33,7 +33,7 @@ jobs:
           name: BeeBEEP ${{ github.ref_name }}
           body_path: CHANGELOG.txt
           files: |
-            *.tar.gz
-            *.deb
-            *.exe
+            **/*.tar.gz
+            **/*.deb
+            scripts/*.exe
           fail_on_unmatched_files: false
