@@ -44,7 +44,6 @@ jobs:
             [ -f "$plugin" ] && cp -P "$plugin" "${RELEASE_DIR}/"
           done
 
-          lrelease locale/*.ts 2>/dev/null
           cp locale/*.qm "${RELEASE_DIR}/" 2>/dev/null || true
           rm -f "${RELEASE_DIR}/beebeep_xx.qm"
           cp src/images/beebeep.png "${RELEASE_DIR}/"
