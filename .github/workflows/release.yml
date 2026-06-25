@@ -1,0 +1,39 @@
+name: Create Release
+
+on:
+  push:
+    tags: [ 'v*' ]
+
+jobs:
+  linux:
+    uses: ./.github/workflows/build-linux.yml
+
+  windows:
+    uses: ./.github/workflows/build-windows.yml
+
+  release:
+    needs: [linux, windows]
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: BeeBEEP ${{ github.ref_name }}
+          body_path: CHANGELOG.txt
+          files: |
+            *.tar.gz
+            *.deb
+            *.exe
+          fail_on_unmatched_files: false

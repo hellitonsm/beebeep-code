@@ -1,0 +1,94 @@
+name: Build Windows (64-bit) + Installer
+
+on:
+  push:
+    branches: [ main, master ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+env:
+  BEEBEEP_VERSION: 5.9.1
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '5.15.2'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2019_64'
+          modules: 'qtmultimedia'
+
+      - name: Setup MSVC dev command prompt
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Build BeeBEEP
+        shell: cmd
+        run: |
+          call qmake -o Makefile beebeep-desktop.pro CONFIG+=release
+          nmake /f Makefile all
+
+      - name: Deploy Qt dependencies
+        shell: powershell
+        run: |
+          $qtBinDir = Join-Path $env:Qt5_Dir "bin"
+          & "$qtBinDir/windeployqt.exe" --release --compiler-runtime test\beebeep.exe
+
+      - name: Prepare installer staging directory
+        shell: powershell
+        run: |
+          $releaseDir = "beebeep-$env:BEEBEEP_VERSION"
+          New-Item -ItemType Directory -Path $releaseDir -Force
+
+          Copy-Item "test\beebeep.exe" "$releaseDir\"
+          Copy-Item "test\*.dll" "$releaseDir\" -ErrorAction SilentlyContinue
+          Copy-Item "test\*.so"  "$releaseDir\" -ErrorAction SilentlyContinue
+          Copy-Item "test\plugins" "$releaseDir\plugins" -Recurse -ErrorAction SilentlyContinue
+
+          Copy-Item "locale\*.qm" "$releaseDir\"
+          Copy-Item "src\images\beebeep.png" "$releaseDir\"
+          Copy-Item "misc\beep.wav" "$releaseDir\"
+          Copy-Item "LICENSE.txt" "$releaseDir\"
+          Copy-Item "CHANGELOG.txt" "$releaseDir\"
+          Copy-Item "BEEBEEP-HELP.txt" "$releaseDir\"
+          Copy-Item "misc\beebeep_example.rc" "$releaseDir\" -ErrorAction SilentlyContinue
+          Copy-Item "misc\beehosts_example.ini" "$releaseDir\" -ErrorAction SilentlyContinue
+
+          Get-ChildItem -Path $releaseDir
+
+      - name: Install Inno Setup
+        shell: powershell
+        run: |
+          $issUrl = "https://jrsoftware.org/download.php/is.exe"
+          $issInstaller = "$env:TEMP\innosetup.exe"
+          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+          Invoke-WebRequest -Uri $issUrl -OutFile $issInstaller
+          Start-Process -FilePath $issInstaller -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /DIR=C:\InnoSetup" -Wait
+          echo "C:\InnoSetup" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Build Inno Setup installer
+        shell: cmd
+        working-directory: scripts
+        run: |
+          iscc deploy_windows_package.iss
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: beebeep-windows-x64
+          path: |
+            scripts\*.exe
+            test\beebeep.exe
+            beebeep-*/**/*

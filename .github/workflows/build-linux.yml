@@ -1,0 +1,91 @@
+name: Build Linux (64-bit)
+
+on:
+  push:
+    branches: [ main, master ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+env:
+  BEEBEEP_VERSION: 5.9.1
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq qtbase5-dev qtmultimedia5-dev \
+            libqt5x11extras5-dev libxcb-screensaver0-dev \
+            libgl1-mesa-dev libavahi-compat-libdnssd-dev
+
+      - name: Build BeeBEEP
+        run: |
+          qmake -o Makefile beebeep-desktop.pro
+          make -j$(nproc) all
+
+      - name: Prepare package
+        run: |
+          RELEASE_DIR="beebeep-${BEEBEEP_VERSION}-qt5-amd64"
+          mkdir -p "${RELEASE_DIR}"
+
+          cp test/beebeep "${RELEASE_DIR}/"
+
+          for plugin in test/lib*.so*; do
+            [ -f "$plugin" ] && cp -P "$plugin" "${RELEASE_DIR}/"
+          done
+
+          cp -r locale/*.qm "${RELEASE_DIR}/"
+          rm -f "${RELEASE_DIR}/beebeep_xx.qm"
+          cp src/images/beebeep.png "${RELEASE_DIR}/"
+          cp misc/beep.wav "${RELEASE_DIR}/"
+          cp LICENSE.txt "${RELEASE_DIR}/"
+          cp CHANGELOG.txt "${RELEASE_DIR}/"
+          cp BEEBEEP-HELP.txt "${RELEASE_DIR}/"
+          cp misc/beebeep_example.rc "${RELEASE_DIR}/" 2>/dev/null || true
+          cp misc/beehosts_example.ini "${RELEASE_DIR}/" 2>/dev/null || true
+
+          chmod 644 "${RELEASE_DIR}"/*.so* 2>/dev/null || true
+          tar czf "${RELEASE_DIR}.tar.gz" "${RELEASE_DIR}"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: beebeep-linux-x86_64-qt5
+          path: |
+            beebeep-*-qt5-amd64.tar.gz
+            test/beebeep
+            test/*.so*
+
+  build-deb:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install packaging dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq qtbase5-dev qtmultimedia5-dev \
+            libqt5x11extras5-dev libxcb-screensaver0-dev \
+            libgl1-mesa-dev rsync dpkg-dev debhelper-compat
+
+      - name: Build .deb package
+        run: |
+          bash scripts/deploy_debian_package.sh
+
+      - name: Upload .deb
+        uses: actions/upload-artifact@v4
+        with:
+          name: beebeep-debian-package
+          path: build/debian*/*.deb
