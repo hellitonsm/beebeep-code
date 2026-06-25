@@ -16,38 +16,32 @@ jobs:
     runs-on: windows-2022
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: Install Qt with aqtinstall
-        shell: powershell
-        run: |
-          pip install aqtinstall
-          aqt list-qt windows desktop --arch 5.15.2 2>&1
-          Write-Host "--- Listing modules for win64_msvc2019_64 ---"
-          aqt list-qt windows desktop --modules 5.15.2 win64_msvc2019_64 2>&1
-          Write-Host "--- Installing Qt 5.15.2 ---"
-          aqt install-qt --outputdir C:\Qt windows desktop 5.15.2 win64_msvc2019_64 --modules qtmultimedia
-          Add-Content $env:GITHUB_ENV "Qt5_Dir=C:\Qt\5.15.2\msvc2019_64"
-          Add-Content $env:GITHUB_PATH "C:\Qt\5.15.2\msvc2019_64\bin"
-
-      - name: Setup MSVC
-        uses: ilammy/msvc-dev-cmd@v1
+      - name: Setup MSYS2 + MinGW + Qt5
+        uses: msys2/setup-msys2@v2
         with:
-          arch: x64
+          update: true
+          msystem: MINGW64
+          install: >-
+            mingw-w64-x86_64-qt5
+            mingw-w64-x86_64-qt5-multimedia
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-make
+            mingw-w64-x86_64-qt5-winextras
 
       - name: Build BeeBEEP
-        shell: cmd
+        shell: msys2 {0}
         run: |
-          call qmake -o Makefile beebeep-desktop.pro CONFIG+=release
-          nmake /f Makefile all
+          /mingw64/bin/qmake.exe -o Makefile beebeep-desktop.pro CONFIG+=release
+          /mingw64/bin/mingw32-make.exe -j$(nproc) -f Makefile all
 
-      - name: Deploy Qt DLLs
-        shell: powershell
+      - name: Deploy Qt DLLs with windeployqt
+        shell: msys2 {0}
         run: |
-          & "C:\Qt\5.15.2\msvc2019_64\bin\windeployqt.exe" --release test\beebeep.exe
+          /mingw64/bin/windeployqt.exe --release test/beebeep.exe
 
       - name: Prepare installer staging
         shell: powershell
@@ -55,6 +49,7 @@ jobs:
           $releaseDir = "beebeep-$env:BEEBEEP_VERSION"
           New-Item -ItemType Directory -Path $releaseDir -Force
           Copy-Item "test\beebeep.exe" "$releaseDir\"
+          Copy-Item "test\*.dll" "$releaseDir\"
           Copy-Item "locale\*.qm" "$releaseDir\"
           Copy-Item "src\images\beebeep.png" "$releaseDir\"
           Copy-Item "misc\beep.wav" "$releaseDir\"
@@ -63,15 +58,16 @@ jobs:
           Copy-Item "BEEBEEP-HELP.txt" "$releaseDir\"
           if (Test-Path "misc\beebeep_example.rc") { Copy-Item "misc\beebeep_example.rc" "$releaseDir\" }
           if (Test-Path "misc\beehosts_example.ini") { Copy-Item "misc\beehosts_example.ini" "$releaseDir\" }
+          Get-ChildItem "$releaseDir"
 
       - name: Install Inno Setup
         shell: powershell
         run: |
           $ProgressPreference = 'SilentlyContinue'
-          $issUrl = "https://jrsoftware.org/download.php/is.exe"
-          $issInstaller = "$env:TEMP\innosetup.exe"
-          Invoke-WebRequest -Uri $issUrl -OutFile $issInstaller
-          Start-Process $issInstaller -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /DIR=C:\InnoSetup" -Wait
+          $url = "https://jrsoftware.org/download.php/is.exe"
+          $out = "$env:TEMP\innosetup.exe"
+          Invoke-WebRequest -Uri $url -OutFile $out
+          Start-Process $out -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /DIR=C:\InnoSetup" -Wait
           Add-Content $env:GITHUB_PATH "C:\InnoSetup"
 
       - name: Build Inno Setup installer
@@ -87,4 +83,3 @@ jobs:
           path: |
             scripts\*.exe
             test\beebeep.exe
-            beebeep-*/**/*
