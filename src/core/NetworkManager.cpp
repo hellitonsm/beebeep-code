@@ -423,14 +423,6 @@ bool NetworkManager::isIPv6Available() const
   return false;
 }
 
-  }
-
-#ifdef BEEBEEP_DEBUG
-  qDebug() << "Host address" << host_address.toString() << "is in broadcast subnet" << broadcast_subnet;
-#endif
-
-  return true;
-}
 
 QList<QHostAddress> NetworkManager::splitInIPv4HostAddresses( const QHostAddress& host_address ) const
 {
