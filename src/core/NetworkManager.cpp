@@ -389,7 +389,15 @@ bool NetworkManager::isHostAddressInBroadcastSubnet( const QHostAddress& host_ad
 #ifdef BEEBEEP_DEBUG
       qDebug() << "Host address" << host_address.toString() << "is not in broadcast subnet" << broadcast_subnet;
 #endif
-  return false;
+      return false;
+    }
+  }
+
+#ifdef BEEBEEP_DEBUG
+  qDebug() << "Host address" << host_address.toString() << "is in broadcast subnet" << broadcast_subnet;
+#endif
+
+  return true;
 }
 
 bool NetworkManager::isIPv6Available() const
