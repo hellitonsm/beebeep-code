@@ -9,27 +9,31 @@ on:
   workflow_dispatch:
 
 env:
-  BEEBEEP_VERSION: 5.9.1
+  BEEBEEP_VERSION: "5.9.1"
 
 jobs:
   build-windows:
     runs-on: windows-2022
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v4
-        with:
-          version: '5.15.2'
-          host: 'windows'
-          target: 'desktop'
-          arch: 'win64_msvc2019_64'
-          modules: 'qtmultimedia'
+      - name: Install Qt with aqtinstall
+        shell: powershell
+        run: |
+          pip install aqtinstall
+          aqt list-qt windows desktop --arch 5.15.2 2>&1
+          Write-Host "--- Listing modules for win64_msvc2019_64 ---"
+          aqt list-qt windows desktop --modules 5.15.2 win64_msvc2019_64 2>&1
+          Write-Host "--- Installing Qt 5.15.2 ---"
+          aqt install-qt --outputdir C:\Qt windows desktop 5.15.2 win64_msvc2019_64 --modules qtmultimedia
+          Add-Content $env:GITHUB_ENV "Qt5_Dir=C:\Qt\5.15.2\msvc2019_64"
+          Add-Content $env:GITHUB_PATH "C:\Qt\5.15.2\msvc2019_64\bin"
 
-      - name: Setup MSVC dev command prompt
+      - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: x64
@@ -40,43 +44,35 @@ jobs:
           call qmake -o Makefile beebeep-desktop.pro CONFIG+=release
           nmake /f Makefile all
 
-      - name: Deploy Qt dependencies
+      - name: Deploy Qt DLLs
         shell: powershell
         run: |
-          $qtBinDir = Join-Path $env:Qt5_Dir "bin"
-          & "$qtBinDir/windeployqt.exe" --release --compiler-runtime test\beebeep.exe
+          & "C:\Qt\5.15.2\msvc2019_64\bin\windeployqt.exe" --release test\beebeep.exe
 
-      - name: Prepare installer staging directory
+      - name: Prepare installer staging
         shell: powershell
         run: |
           $releaseDir = "beebeep-$env:BEEBEEP_VERSION"
           New-Item -ItemType Directory -Path $releaseDir -Force
-
           Copy-Item "test\beebeep.exe" "$releaseDir\"
-          Copy-Item "test\*.dll" "$releaseDir\" -ErrorAction SilentlyContinue
-          Copy-Item "test\*.so"  "$releaseDir\" -ErrorAction SilentlyContinue
-          Copy-Item "test\plugins" "$releaseDir\plugins" -Recurse -ErrorAction SilentlyContinue
-
           Copy-Item "locale\*.qm" "$releaseDir\"
           Copy-Item "src\images\beebeep.png" "$releaseDir\"
           Copy-Item "misc\beep.wav" "$releaseDir\"
           Copy-Item "LICENSE.txt" "$releaseDir\"
           Copy-Item "CHANGELOG.txt" "$releaseDir\"
           Copy-Item "BEEBEEP-HELP.txt" "$releaseDir\"
-          Copy-Item "misc\beebeep_example.rc" "$releaseDir\" -ErrorAction SilentlyContinue
-          Copy-Item "misc\beehosts_example.ini" "$releaseDir\" -ErrorAction SilentlyContinue
-
-          Get-ChildItem -Path $releaseDir
+          if (Test-Path "misc\beebeep_example.rc") { Copy-Item "misc\beebeep_example.rc" "$releaseDir\" }
+          if (Test-Path "misc\beehosts_example.ini") { Copy-Item "misc\beehosts_example.ini" "$releaseDir\" }
 
       - name: Install Inno Setup
         shell: powershell
         run: |
+          $ProgressPreference = 'SilentlyContinue'
           $issUrl = "https://jrsoftware.org/download.php/is.exe"
           $issInstaller = "$env:TEMP\innosetup.exe"
-          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
           Invoke-WebRequest -Uri $issUrl -OutFile $issInstaller
-          Start-Process -FilePath $issInstaller -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /DIR=C:\InnoSetup" -Wait
-          echo "C:\InnoSetup" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          Start-Process $issInstaller -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /DIR=C:\InnoSetup" -Wait
+          Add-Content $env:GITHUB_PATH "C:\InnoSetup"
 
       - name: Build Inno Setup installer
         shell: cmd
