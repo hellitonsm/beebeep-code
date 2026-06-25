@@ -40,8 +40,8 @@ Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "..\..\beebeep-5.9.1\beebeep.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\..\beebeep-5.9.1\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\beebeep-5.9.1\beebeep.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\beebeep-5.9.1\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
